@@ -30,31 +30,46 @@ Everything is saved to a log file, and any errors are also saved to an error log
 
 #### What the script does NOT do
 
-It does **not** do a 2-way sync. 
+It does **not** do a 2-way sync. It only syncs one Plex server to another Plex server.
 
-This script is written for those who have a main Plex server and a backup Plex server and want to keep the backup server in sync with the main server. Or for those who have a Plex server at home and a Plex server at their holiday house and want to sync to their holiday house Plex server before leaving home, and then sync back to their home Plex server before leaving the holiday house to return home.
+This script was written for those who have a main Plex server and a backup Plex server and want to keep the backup server in sync with the main server. Or for those who have a Plex server at home and a Plex server at their holiday house and want to sync to their holiday house Plex server before leaving home, and then sync back to their home Plex server before leaving the holiday house to return home.
 
 ### Requirements
 
-**The script needs to run on the source plex server machine.**
+1. **The script needs to run on the source Plex Media Server machine.**
 
-**The following files must be in the same folder as plex_server_sync.sh**
+2. **The following files must be in the same folder as plex_server_sync.sh**
 
-```YAML
-plex_server_sync.config
-edit_preferences.sh
-plex_rsync_exclude.txt
-```
+   ```YAML
+   plex_server_sync.config
+   edit_preferences.sh
+   plex_rsync_exclude.txt
+   ```
 
-**Both Plex servers must be running the same Plex Media Server version**
+3. **Both Plex servers must be running the same Plex Media Server version**
 
-**Both Plex servers must have the same library path**
+4. **Both Plex servers must have the same library path**
 
-If the source Plex server accesses it's media libraries at "/volume1/videos" and "/volume1/music" then the destination server also needs to access it's media libraries at "/volume1/videos" and "/volume1/music"
+   If the source Plex server accesses it's media libraries at "/volume1/videos" and "/volume1/music" then the destination server also needs to access it's media libraries at "/volume1/videos" and "/volume1/music"
 
-**SSH Keys and sudoers**
+5. **SSH Keys and sudoers**
 
-If you want to schedule the script to run unattended, as a scheduled cron job, the users need to have sudoers and SSH keys setup so that the SSH, SCP and rsync commands can access the remote server without you entering the user's password. 
+   If you want to schedule the script to run unattended, as a scheduled cron job, the users need to have sudoers and SSH keys setup so that the SSH, SCP and rsync commands can access the remote server without you entering the user's password. 
+
+**Asustor NAS requirements**
+
+Because the Asustor only has Busybox ash and this script requires bash you'll need to instal bash.
+
+To install bash on your Asustor:
+
+1. First install Entware from App Central. 
+
+2. Then run the following commands via SSH. You can run the commands in "Shell In A Box" from App Central, or use PuTTY.
+
+   ```YAML
+   opkg update && opkg upgrade
+   opkg install bash
+   ```
 
 ### Settings
 
