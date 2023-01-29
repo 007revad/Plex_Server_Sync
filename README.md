@@ -58,7 +58,7 @@ If you want to schedule the script to run unattended, as a scheduled cron job, t
 
 ### Settings
 
-You need to set the source and destination settings in the plex_server_sync.config file. There are also a few optional settings in the plex_server_sync.config file.
+You need to set the source and destination settings in the **plex_server_sync.config file**. There are also a few optional settings in the plex_server_sync.config file.
 
 **For example:**
 
