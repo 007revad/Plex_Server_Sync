@@ -1,0 +1,11 @@
+edit_preferences.sh
+Preferences.bak
+.LocalAdminToken
+plexmediaserver.pid
+Cache
+Codecs
+Crash Reports
+Diagnostics
+Drivers
+Logs
+Updates
