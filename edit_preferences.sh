@@ -6,6 +6,8 @@
 # Script verified at https://www.shellcheck.net/
 #--------------------------------------------------------------------------
 
+# TODO refactor this WET code to DRY (Don't Repeat Yourself)
+
 cd "$(dirname "$0")" || { echo "cd $(dirname "$0") failed!"; exit 1; }
 #echo $PWD  # debug
 
