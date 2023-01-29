@@ -9,8 +9,9 @@
 # Requirements:
 #   The script MUST be run on the device where the main Plex server is.
 #   The following files must be in the same folder as Plex_Server_Sync.sh
-#     1. plex_rsync_exclude.txt
-#     2. edit_preferences.sh
+#     1. plex_server_sync.config
+#     2. plex_rsync_exclude.txt
+#     3. edit_preferences.sh
 #
 # If you want to schedule this script to run as a user:
 #  1. You need SSH keys setup so SCP and rsync can connect without passwords.
@@ -20,52 +21,13 @@
 # Script verified at https://www.shellcheck.net/
 #------------------------------------------------------------------------------
 
-# Local machine's IP or hostname and OS
-# OS can be ADM, DSM6, DSM7, Ubuntu, Debian or Linux (required to stop/start local Plex)
-src_IP=diskstation
-src_OS=DSM7
-
-# Location of local Plex data folder
-src_Directory="/volume1/PlexMediaServer/AppData/Plex Media Server"
-
-
-# Destination machine's IP or hostname and OS
-# OS can be ADM, DSM6, DSM7, Ubuntu, Debian or Linux (required to stop/start remote Plex)
-dst_IP=webber
-dst_OS=DSM6
-
-# Location of destination Plex data folder
-dst_Directory="/volume1/Plex/Library/Application Support/Plex Media Server"
-
-
-# Local and remote users with SSH keys and sudoers setup
-src_User=Dave
-dst_User=Dave
-
-# Remote SSH port, if blank the default port 22 is used
-dst_SshPort=32
-
-
-# rsync delete extra files from destination [yes/no]
-# If left blank you'll be asked "Delete yes/no?"
-# If you don't answer within 10 seconds it defaults to no
-Delete=yes
-
-# Do an rsync dry run to check results are as expected [yes/no]
-# If left blank you'll be asked "Dry Run yes/no?"
-# If you don't answer within 10 seconds it defaults to no
-DryRun=no
-
-
-# Set path to save log file. Directory must exist already
-# If blank the logs are saved in script location
-LogPath=~/plex_server_sync_logs
-
-
-src_Directory="/volume1/plex_test/AppData/Plex Media Server"             # test, delete later ##########
-#dst_Directory="/volume1/plex_test/Library/Plex Media Server"             # test, delete later ##########
-
-dst_Directory="/volume1/plex_test/From DSM7"                             # test, delete later ##########
+# Read variables from plex_server_sync.config
+if [[ -f $(dirname -- "$0";)/plex_server_sync.config ]];then
+    source $(dirname -- "$0";)/plex_server_sync.config
+else
+    echo "plex_server_sync.config file missing!"
+    exit 1
+fi
 
 
 #-----------------------------------------------------
