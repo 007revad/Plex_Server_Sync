@@ -41,6 +41,7 @@ This script is written for those who have a main Plex server and a backup Plex s
 **The following files must be in the same folder as plex_server_sync.sh**
 
 ```YAML
+plex_server_sync.config
 edit_preferences.sh
 plex_rsync_exclude.txt
 ```
@@ -57,7 +58,7 @@ If you want to schedule the script to run unattended, as a scheduled cron job, t
 
 ### Settings
 
-You need to set the source and destination settings at the top of the script. There are also a few optional settings.
+You need to set the source and destination settings in the plex_server_sync.config file. There are also a few optional settings in the plex_server_sync.config file.
 
 **For example:**
 
