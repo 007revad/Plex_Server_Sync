@@ -21,6 +21,19 @@
 # Script verified at https://www.shellcheck.net/
 #------------------------------------------------------------------------------
 
+# Check if script is running in GNU bash and not BusyBox ash
+Shell=$(/proc/self/exe --version 2>/dev/null | grep "GNU bash" | cut -d "," -f1)
+if [ "$Shell" != "GNU bash" ]; then
+    echo -e "\nYou need to install bash to be able to run this script."
+    echo -e "\nIf running this script on an ASUSTOR:"
+    echo "1. Install Entware from App Central"
+    echo "2. Run the following commands in a shell:"
+    echo "opkg update && opkg upgrade"
+    echo -e "opkg install bash\n"
+    exit 1
+fi
+
+
 # Read variables from plex_server_sync.config
 if [[ -f $(dirname -- "$0";)/plex_server_sync.config ]];then
     source $(dirname -- "$0";)/plex_server_sync.config
@@ -28,6 +41,12 @@ else
     echo "plex_server_sync.config file missing!"
     exit 1
 fi
+
+
+#src_Directory="/volume1/plex_test/AppData/Plex Media Server"             # test, delete later ##########
+#dst_Directory="/volume1/plex_test/Library/Plex Media Server"             # test, delete later ##########
+
+#dst_Directory="/volume1/plex_test/From DSM7"                             # test, delete later ##########
 
 
 #-----------------------------------------------------
@@ -224,13 +243,10 @@ function PlexControl() {
                 adm)
                     sudo /usr/local/AppCentral/plexmediaserver/CONTROL/start-stop.sh "$1"
                     ;;
-                ubuntu|debian)
-                    # UNTESTED
-                    sudo service plexmediaserver "$1"
-                    ;;
                 linux)
                     # UNTESTED
-                    sudo systemctl "$1" plexmediaserver
+                    #sudo systemctl "$1" plexmediaserver
+                    sudo service plexmediaserver "$1"
                     ;;
                 *)
                     echo "Unknown local OS type. Cannot $1 Plex." |& tee -a "$Log"
@@ -252,13 +268,10 @@ function PlexControl() {
                     ssh "${dst_User}@${dst_IP}" -p "$dst_SshPort" \
                         "sudo /usr/local/AppCentral/plexmediaserver/CONTROL/start-stop.sh $1"
                     ;;
-                ubuntu|debian)
-                    # UNTESTED
-                    ssh "${dst_User}@${dst_IP}" -p "$dst_SshPort" "sudo service plexmediaserver $1"
-                    ;;
                 linux)
                     # UNTESTED
-                    ssh "${dst_User}@${dst_IP}" -p "$dst_SshPort" "sudo systemctl $1 plexmediaserver"
+                    #ssh "${dst_User}@${dst_IP}" -p "$dst_SshPort" "sudo systemctl $1 plexmediaserver"
+                    ssh "${dst_User}@${dst_IP}" -p "$dst_SshPort" "sudo service plexmediaserver $1"
                     ;;
                 *)
                     echo "Unknown remote OS type. Cannot $1 Plex." |& tee -a "$Log"
