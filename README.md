@@ -1,5 +1,5 @@
 # Plex Server Sync
-Sync main Plex server database &amp; metadata to backup Plex server
+Sync main Plex server database &amp; metadata to a backup Plex server
 
 <a href="https://github.com/007revad/Plex_Server_Sync/releases"><img src="https://img.shields.io/github/release/007revad/Plex_Server_Sync.svg"></a>
 <a href="https://hits.seeyoufarm.com"><img src="https://hits.seeyoufarm.com/api/count/incr/badge.svg?url=https%3A%2F%2Fgithub.com%2F007revad%2FPlex_Server_Sync&count_bg=%2379C83D&title_bg=%23555555&icon=&icon_color=%23E7E7E7&title=hits&edge_flat=false"/></a>
