@@ -8,7 +8,7 @@ Sync main Plex server database &amp; metadata to a backup Plex server
 
 ### Description
 
-Plex_Server_Sync is a bash script to sync one Plex Media Server to another Plex Media Server, **including played status, play progress, posters, metadata, ratings and settings**. The only things not synced are settings specific to each Plex Media Server (like server ID, friendly name, public port etc), and files and folders listed in the plex_rsync_exclude.txt file.
+Plex Server Sync is a bash script to sync one Plex Media Server to another Plex Media Server, **including played status, play progress, posters, metadata, ratings and settings**. The only things not synced are settings specific to each Plex Media Server (like server ID, friendly name, public port etc), and files and folders listed in the plex_rsync_exclude.txt file.
 
 This script was written for people who:
 
