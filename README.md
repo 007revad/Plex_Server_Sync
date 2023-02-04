@@ -10,7 +10,12 @@ Sync main Plex server database &amp; metadata to a backup Plex server
 
 Plex_Server_Sync is a bash script to sync one Plex Media Server to another Plex Media Server, **including played status, play progress, posters, metadata, ratings and settings**. The only things not synced are settings specific to each Plex Media Server (like server ID, friendly name, public port etc), and files and folders listed in the plex_rsync_exclude.txt file.
 
-This script was written for those who have a main Plex server and a backup Plex server and want to keep the backup server in sync with the main server. Or for those who have a Plex server at home and a Plex server at their holiday house and want to sync to their holiday house Plex server before leaving home, and then sync back to their home Plex server before leaving the holiday house to return home.
+This script was written for people who:
+
+* Have setup clean installation of Plex Media Server on a different device and want to migrate their Plex settings, meta data, database, played status and played progress to the new device.
+* Have a main Plex server and a backup Plex server and want to keep the backup server in sync with the main server. 
+* Have a Plex server at home and a Plex server at their holiday house and want to sync to their holiday house Plex server before leaving home, and then sync back to their home Plex server before leaving the holiday house to return home.
+
 The script needs to run on the source plex server machine.
 
 Tested on Synolgy DSM 7, DSM 6 and Asustor ADM. It should also work on Linux.
