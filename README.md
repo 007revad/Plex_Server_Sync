@@ -12,7 +12,7 @@ Plex Server Sync is a bash script to sync one Plex Media Server to another Plex 
 
 This script was written for people who:
 
-* Have setup clean installation of Plex Media Server on a different device and want to migrate their Plex settings, meta data, database, played status and played progress to the new device.
+* Have setup a clean installation of Plex Media Server on a different device and want to migrate their Plex settings, meta data, database, played status and played progress to the new device.
 * Have a main Plex server and a backup Plex server and want to keep the backup server in sync with the main server. 
 * Have a Plex server at home and a Plex server at their holiday house and want to sync to their holiday house Plex server before leaving home, and then sync back to their home Plex server before leaving the holiday house to return home.
 
