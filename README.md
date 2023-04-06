@@ -59,6 +59,8 @@ It does **not** do a 2-way sync. It only syncs one Plex server to another Plex s
 5. **SSH Keys and sudoers**
 
    If you want to schedule the script to run unattended, as a scheduled cron job, the users need to have sudoers and SSH keys setup so that the SSH, SCP and rsync commands can access the remote server without you entering the user's password. 
+   
+   See https://blog.golimb.com/2020/10/03/synology-ssh-key-authentication/ for steps on setting SSH key authentication.
 
 **Asustor NAS requirements**
 
