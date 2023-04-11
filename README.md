@@ -39,6 +39,10 @@ Everything is saved to a log file, and any errors are also saved to an error log
 
 It does **not** do a 2-way sync. It only syncs one Plex server to another Plex server.
 
+### Download the script
+
+See <a href=images/how_to_download_generic.png/>How to download the script</a> for the easiest way to download the script.
+
 ### Requirements
 
 1. **The script needs to run on the source Plex Media Server machine.**
