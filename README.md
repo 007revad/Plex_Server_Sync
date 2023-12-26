@@ -93,17 +93,44 @@ To install bash on your Asustor:
 
 You need to set the source and destination settings in the **plex_server_sync.config** file. There are also a few optional settings in the plex_server_sync.config file.
 
-**For example:**
+**Examples:**
 
+**Source and destination both Plex package:**
 ```YAML
 src_IP=192.168.0.70
 src_OS=DSM7
+src_Docker=no
+src_Docker_plex_name=
 src_Directory="/volume1/PlexMediaServer/AppData/Plex Media Server"
 src_User=Bob
 
 dst_IP=192.168.0.60
 dst_OS=DSM6
+dst_Docker=no
+dst_Docker_plex_name=
 dst_Directory="/volume1/Plex/Library/Application Support/Plex Media Server"
+dst_User=Bob
+dst_SshPort=22
+
+Delete=yes
+DryRun=no
+LogPath=~/plex_server_sync_logs
+```
+
+**Source and destination both Plex in docker:**
+```YAML
+src_IP=192.168.0.70
+src_OS=DSM7
+dst_Docker=yes
+dst_Docker_plex_name="plexinc-pms-docker-1"
+src_Directory="/volume1/docker/plex/Library/Application Support"
+src_User=Bob
+
+dst_IP=192.168.0.60
+dst_OS=DSM6
+dst_Docker=yes
+dst_Docker_plex_name="plexinc-pms-docker-1"
+dst_Directory="/volume1/docker/plex/Library/Application Support"
 dst_User=Bob
 dst_SshPort=22
 
