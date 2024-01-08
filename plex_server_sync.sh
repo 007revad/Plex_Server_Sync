@@ -35,8 +35,11 @@ fi
 
 
 # Read variables from plex_server_sync.config
-if [[ -f $(dirname -- "$0";)/plex_server_sync.config ]];then
-    source $(dirname -- "$0";)/plex_server_sync.config
+if [[ -f $(dirname -- "$0";)/plex_server_sync.config ]]; then
+    # shellcheck disable=SC1090,SC1091
+    while read -r var; do
+        if [[ $var =~ ^[a-zA-Z0-9_]+=.* ]]; then export "$var"; fi
+    done < "$(dirname -- "$0";)"/plex_server_sync.config
 else
     echo "plex_server_sync.config file missing!"
     exit 1
@@ -149,7 +152,7 @@ fi
 # Check host and destination are not the same
 
 # This function is also used by PlexVersion function
-function Host2IP() {
+Host2IP(){ 
     if [[ $2 == "remote" ]]; then
         # Get remote IP from hostname
         ip=$(ssh "${dst_User}@${1,,}" -p "$dst_SshPort"\
@@ -181,7 +184,7 @@ fi
 # we can get the Plex version from Plex binary but location is OS dependant
 # so we'll use the independent method (but it requires Plex to be running)
 
-function PlexVersion() {
+PlexVersion(){ 
     if [[ $2 == "remote" ]]; then
         ip=$(Host2IP "$1" remote)
     else
@@ -191,7 +194,7 @@ function PlexVersion() {
         # Get Plex version from IP address
         Response=$(curl -s "http://${ip}:32400/identity")
         ver=$(printf %s "$Response" | grep '" version=' | awk -F= '$1=="version"\
-            {print $2}' RS=' ' | cut -d'"' -f2 | cut -d\- -f1)
+            {print $2}' RS=' ' | cut -d'"' -f2 | cut -d"-" -f1)
         echo "$ver"
     fi
     return
@@ -229,55 +232,79 @@ fi
 #-----------------------------------------------------
 # Plex Stop Start function
 
-function PlexControl() {
+PlexControl(){ 
     if [[ $1 == "start" ]] || [[ $1 == "stop" ]]; then
         if [[ $2 == "local" ]]; then
             # stop or start local server
-            case ${src_OS,,} in
-                dsm7)
-                    sudo /usr/syno/bin/synopkg "$1" PlexMediaServer >/dev/null
-                    ;;
-                dsm6)
-                    sudo /usr/syno/bin/synopkg "$1" "Plex Media Server"
-                    ;;
-                adm)
-                    sudo /usr/local/AppCentral/plexmediaserver/CONTROL/start-stop.sh "$1"
-                    ;;
-                linux)
-                    # UNTESTED
-                    #sudo systemctl "$1" plexmediaserver
-                    sudo service plexmediaserver "$1"
-                    ;;
-                *)
-                    echo "Unknown local OS type. Cannot $1 Plex." |& tee -a "$Log"
-                    exit 1
-                    ;;
-            esac
+            if [[ $src_Docker == "yes" ]]; then
+                if [[ ${src_OS,,} == "dsm7" ]] || [[ ${src_OS,,} == "dsm6" ]]; then
+                # https://www.reddit.com/r/synology/comments/15h6dn3/how_to_stop_all_docker_containers_peacefully/
+                    synowebapi --exec api=SYNO.Docker.Container method="$1" version=1 \
+                        name="$src_Docker_plex_name" >/dev/null
+                else
+                    # docker stop results in "Docker container stopped unexpectedly" alert and email.
+                    docker "$1" "$(docker ps -qf name=^"$src_Docker_plex_name"$)" >/dev/null
+                fi
+            else
+                case ${src_OS,,} in
+                    dsm7)
+                        sudo /usr/syno/bin/synopkg "$1" PlexMediaServer >/dev/null
+                        ;;
+                    dsm6)
+                        sudo /usr/syno/bin/synopkg "$1" "Plex Media Server"
+                        ;;
+                    adm)
+                        sudo /usr/local/AppCentral/plexmediaserver/CONTROL/start-stop.sh "$1"
+                        ;;
+                    linux)
+                        # UNTESTED
+                        #sudo systemctl "$1" plexmediaserver
+                        sudo service plexmediaserver "$1"
+                        ;;
+                    *)
+                        echo "Unknown local OS type. Cannot $1 Plex." |& tee -a "$Log"
+                        exit 1
+                        ;;
+                esac
+            fi
         elif [[ $2 == "remote" ]]; then
             # stop or start remote server
-            case ${dst_OS,,} in
-                dsm7)
+            if [[ $src_Docker == "yes" ]]; then
+                if [[ ${src_OS,,} == "dsm7" ]] || [[ ${src_OS,,} == "dsm6" ]]; then
+                # https://www.reddit.com/r/synology/comments/15h6dn3/how_to_stop_all_docker_containers_peacefully/
                     ssh "${dst_User}@${dst_IP}" -p "$dst_SshPort" \
-                        "sudo /usr/syno/bin/synopkg $1 PlexMediaServer" >/dev/null
-                    ;;
-                dsm6)
+                        "sudo synowebapi --exec api=SYNO.Docker.Container method=$1 version=1" \
+                            "name=$dst_Docker_plex_name" >/dev/null
+                else
+                    # docker stop results in "Docker container stopped unexpectedly" alert and email.
                     ssh "${dst_User}@${dst_IP}" -p "$dst_SshPort" \
-                        "sudo /usr/syno/bin/synopkg $1 Plex\ Media\ Server"
-                    ;;
-                adm)
-                    ssh "${dst_User}@${dst_IP}" -p "$dst_SshPort" \
-                        "sudo /usr/local/AppCentral/plexmediaserver/CONTROL/start-stop.sh $1"
-                    ;;
-                linux)
-                    # UNTESTED
-                    #ssh "${dst_User}@${dst_IP}" -p "$dst_SshPort" "sudo systemctl $1 plexmediaserver"
-                    ssh "${dst_User}@${dst_IP}" -p "$dst_SshPort" "sudo service plexmediaserver $1"
-                    ;;
-                *)
-                    echo "Unknown remote OS type. Cannot $1 Plex." |& tee -a "$Log"
-                    exit 1
-                    ;;
-            esac
+                        "sudo docker $1 $(docker ps -qf name=^"$dst_Docker_plex_name"$)" >/dev/null
+                fi
+            else
+                case ${dst_OS,,} in
+                    dsm7)
+                        ssh "${dst_User}@${dst_IP}" -p "$dst_SshPort" \
+                            "sudo /usr/syno/bin/synopkg $1 PlexMediaServer" >/dev/null
+                        ;;
+                    dsm6)
+                        ssh "${dst_User}@${dst_IP}" -p "$dst_SshPort" \
+                            "sudo /usr/syno/bin/synopkg $1 Plex\ Media\ Server"
+                        ;;
+                    adm)
+                        ssh "${dst_User}@${dst_IP}" -p "$dst_SshPort" \
+                            "sudo /usr/local/AppCentral/plexmediaserver/CONTROL/start-stop.sh $1"
+                        ;;
+                    linux)
+                        # UNTESTED
+                        #ssh "${dst_User}@${dst_IP}" -p "$dst_SshPort" "sudo systemctl $1 plexmediaserver"
+                        ssh "${dst_User}@${dst_IP}" -p "$dst_SshPort" "sudo service plexmediaserver $1"
+                        ;;
+                    *)
+                        echo "Unknown remote OS type. Cannot $1 Plex." |& tee -a "$Log"
+                        exit 1
+                        ;;
+                esac
+            fi
         else
             echo "Invalid parameter #2: $2" |& tee -a "$Log"
             exit 1
@@ -356,12 +383,12 @@ echo ""
 # Unset any existing arguments
 while [[ $1 ]]; do shift; done
 
-if [[ ${DryRun,,} == yes ]];then
+if [[ ${DryRun,,} == yes ]]; then
     # Set --dry-run flag for rsync
     set -- "$@" "--dry-run"
     echo Running an rsync dry-run test |& tee -a "$Log"
 fi
-if [[ ${Delete,,} == yes ]];then
+if [[ ${Delete,,} == yes ]]; then
     # Set --delete flag for rsync
     set -- "$@" "--delete"
     echo Running rsync with delete flag |& tee -a "$Log"
@@ -379,13 +406,13 @@ echo -e "\nCopying edit_preferences.sh to destination" |& tee -a "$Log"
 
 if [[ $src_OS == DSM7 ]]; then
     # -O flag is required if DSM7 is the source or SCP defaults to SFTP
-    sudo -u $src_User scp -O -P $dst_SshPort "$(dirname "$0")/edit_preferences.sh" \
-        $dst_User@$dst_IP:"'${dst_Directory}/'" |& tee -a "$Log"
+    sudo -u "$src_User" scp -O -P "$dst_SshPort" "$(dirname "$0")/edit_preferences.sh" \
+        "$dst_User"@"$dst_IP":"'${dst_Directory}/'" |& tee -a "$Log"
 else
     # Prepend spaces in destination path with \\ 
     spath=$(dirname "$0")
-    sudo -u $src_User scp -P $dst_SshPort "${spath}/edit_preferences.sh" \
-        $dst_User@$dst_IP:"${dst_Directory// /\\ }/" |& tee -a "$Log"
+    sudo -u "$src_User" scp -P "$dst_SshPort" "${spath}/edit_preferences.sh" \
+        "$dst_User"@"$dst_IP":"${dst_Directory// /\\ }/" |& tee -a "$Log"
 fi
 
 echo -e "\nRunning $dst_Directory/edit_preferences.sh" |& tee -a "$Log"
