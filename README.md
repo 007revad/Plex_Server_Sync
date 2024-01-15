@@ -48,7 +48,9 @@ It does **not** do a 2-way sync. It only syncs one Plex server to another Plex s
 
 ### Download the script
 
-See <a href=images/how_to_download_generic.png/>How to download the script</a> for the easiest way to download the script.
+1. Download the latest version _Source code (zip)_ from https://github.com/007revad/Plex_Server_Sync/releases
+2. Save the download zip file to a folder on the Synology.
+3. Unzip the zip file.
 
 ### Requirements
 
