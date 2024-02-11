@@ -457,7 +457,7 @@ end="${SECONDS}"
 Runtime=$(( end - start ))
 
 # Append start and end date/time and runtime
-echo -e "\nBackup Started: " "${Started}" |& tee -a "$Log"
+echo -e "\nPlex Sync Started: " "${Started}" |& tee -a "$Log"
 echo "Plex Sync Finished:" "${Finished}" |& tee -a "$Log"
 # Append days, hours, minutes and seconds from $Runtime
 printf "Plex Sync Duration: " |& tee -a "$Log"
