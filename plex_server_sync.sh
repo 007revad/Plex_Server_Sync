@@ -21,10 +21,19 @@
 # Script verified at https://www.shellcheck.net/
 #------------------------------------------------------------------------------
 
+scriptver="v2.0.6"
+script=Plex_Server_Sync
+repo="007revad/Plex_Server_Sync"
+scriptname=plex_server_sync
+
+# Show script version
+echo -e "$script $scriptver\n"
+
+
 # Check if script is running in GNU bash and not BusyBox ash
 Shell=$(/proc/self/exe --version 2>/dev/null | grep "GNU bash" | cut -d "," -f1)
 if [ "$Shell" != "GNU bash" ]; then
-    echo -e "\nYou need to install bash to be able to run this script."
+    echo -e "You need to install bash to be able to run this script."
     echo -e "\nIf running this script on an ASUSTOR:"
     echo "1. Install Entware from App Central"
     echo "2. Run the following commands in a shell:"
@@ -457,7 +466,7 @@ end="${SECONDS}"
 Runtime=$(( end - start ))
 
 # Append start and end date/time and runtime
-echo -e "\nBackup Started: " "${Started}" |& tee -a "$Log"
+echo -e "\nPlex Sync Started: " "${Started}" |& tee -a "$Log"
 echo "Plex Sync Finished:" "${Finished}" |& tee -a "$Log"
 # Append days, hours, minutes and seconds from $Runtime
 printf "Plex Sync Duration: " |& tee -a "$Log"
