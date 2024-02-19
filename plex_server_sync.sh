@@ -21,7 +21,7 @@
 # Script verified at https://www.shellcheck.net/
 #------------------------------------------------------------------------------
 
-scriptver="v2.0.6"
+scriptver="v2.0.7"
 script=Plex_Server_Sync
 repo="007revad/Plex_Server_Sync"
 scriptname=plex_server_sync
@@ -248,7 +248,7 @@ PlexControl(){
             if [[ $src_Docker == "yes" ]]; then
                 if [[ ${src_OS,,} == "dsm7" ]] || [[ ${src_OS,,} == "dsm6" ]]; then
                 # https://www.reddit.com/r/synology/comments/15h6dn3/how_to_stop_all_docker_containers_peacefully/
-                    synowebapi --exec api=SYNO.Docker.Container method="$1" version=1 \
+                    /usr/syno/bin/synowebapi --exec api=SYNO.Docker.Container method="$1" version=1 \
                         name="$src_Docker_plex_name" >/dev/null
                 else
                     # docker stop results in "Docker container stopped unexpectedly" alert and email.
@@ -282,7 +282,7 @@ PlexControl(){
                 if [[ ${src_OS,,} == "dsm7" ]] || [[ ${src_OS,,} == "dsm6" ]]; then
                 # https://www.reddit.com/r/synology/comments/15h6dn3/how_to_stop_all_docker_containers_peacefully/
                     ssh "${dst_User}@${dst_IP}" -p "$dst_SshPort" \
-                        "sudo synowebapi --exec api=SYNO.Docker.Container method=$1 version=1" \
+                        "sudo /usr/syno/bin/synowebapi --exec api=SYNO.Docker.Container method=$1 version=1" \
                             "name=$dst_Docker_plex_name" >/dev/null
                 else
                     # docker stop results in "Docker container stopped unexpectedly" alert and email.
