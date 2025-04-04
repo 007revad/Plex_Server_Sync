@@ -121,7 +121,9 @@ fi
 
 # Check script is running on the source device
 host=$(hostname)  # for comparability
-ip=$(ip route get 1 | sed 's/^.*src \([^ ]*\).*$/\1/;q')  # for comparability
+#ip=$(ip route get 1 | sed 's/^.*src \([^ ]*\).*$/\1/;q')  # for comparability
+ip=$(ip -o route get $dst_IP | sed 's/^.*src \([^ ]*\).*$/\1/;q')  # Issue #6
+sed 's/^.*src \([^ ]*\).*$/\1/;q') 
 if [[ $src_IP != "${host,,}" ]] && [[ $src_IP != "$ip" ]]; then
     echo "Aborting! Script is not running on source device: $src_IP"  |& tee -a "$Log"
     exit 1
